@@ -1,7 +1,8 @@
 import mongoose, { Document, ObjectId, Schema } from "mongoose";
+import { IUser } from "./User";
 
 export interface INotification extends Document {
-  user: ObjectId;
+  user: ObjectId | IUser;
   message: string;
   link: string;
   read: boolean;

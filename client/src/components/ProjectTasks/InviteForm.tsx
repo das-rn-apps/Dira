@@ -1,12 +1,12 @@
 import { useState } from "react";
 import api from "../../services/api";
 
-export default function InviteForm({ projectId }: { projectId: string }) {
+export default function InviteForm({ project_id }: { project_id: string }) {
     const [inviteEmail, setInviteEmail] = useState("");
 
     const handleInvite = async () => {
         try {
-            await api.post(`/projects/${projectId}/invite`, { email: inviteEmail });
+            await api.post(`/api/projects/${project_id}/invite`, { email: inviteEmail });
             alert("User invited!");
             setInviteEmail("");
         } catch (err: any) {

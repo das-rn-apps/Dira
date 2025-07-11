@@ -1,23 +1,24 @@
 import mongoose, { Document, ObjectId, Schema } from "mongoose";
+import { IUser } from "./User";
 
 export interface ITask extends Document {
-  project: ObjectId;
+  project_id: ObjectId;
   title: string;
   description: string;
-  comments: [String];
-  status: string;
-  assignee?: string;
+  comments: ObjectId[] | IUser[];
+  status: "todo" | "in-progress" | "done" | "testing";
+  assignee?: ObjectId | IUser;
 }
 
 const taskSchema = new Schema<ITask>(
   {
-    project: { type: mongoose.Schema.Types.ObjectId, ref: "Project" },
+    project_id: { type: mongoose.Schema.Types.ObjectId, ref: "Project" },
     title: String,
     description: String,
-    comments: [String],
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     status: {
       type: String,
-      enum: ["todo", "in-progress", "done"],
+      enum: ["todo", "in-progress", "done", "testing"],
       default: "todo",
     },
     assignee: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

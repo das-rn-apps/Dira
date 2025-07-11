@@ -16,7 +16,7 @@ function App() {
         {/* Protected Routes (via layout wrapper) */}
         <Route element={<PrivateLayout />}>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/project/:projectId" element={<ProjectTasks />} />
+          <Route path="/project/:project_id" element={<ProjectTasks />} />
         </Route>
       </Routes>
     </BrowserRouter>

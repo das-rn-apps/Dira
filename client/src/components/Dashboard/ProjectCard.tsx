@@ -5,33 +5,9 @@ import {
     RefreshCcw,
     BadgeCheck,
     Users2,
+    ListChecks,
 } from "lucide-react";
-
-interface Member {
-    user: {
-        email: string;
-        name: string;
-        _id: string;
-    };
-    role: string;
-}
-
-interface Owner {
-    email: string;
-    name: string;
-    _id: string;
-}
-
-interface Props {
-    _id: string;
-    name: string;
-    description: string;
-    createdAt?: string;
-    updatedAt?: string;
-    status?: string;
-    members?: Member[];
-    owner?: Owner;
-}
+import type { IProject } from "../../types";
 
 export default function ProjectCard({
     _id,
@@ -42,59 +18,81 @@ export default function ProjectCard({
     status,
     owner,
     members,
-}: Props) {
+    tasks,
+}: IProject) {
     const navigate = useNavigate();
+
+    const statusColors: Record<string, string> = {
+        Completed: "bg-green-100 text-green-700",
+        "In Progress": "bg-yellow-100 text-yellow-700",
+        "Not Started": "bg-gray-100 text-gray-600",
+        default: "bg-blue-100 text-blue-700",
+    };
 
     return (
         <div
             onClick={() => navigate(`/project/${_id}`)}
-            className="bg-white border border-gray-300  hover:bg-gray-50 transition-all duration-200 cursor-pointer p-4 space-y-3"
+            className="bg-sky-50 rounded-xs border border-sky-200 shadow-xs hover:shadow-sm transition cursor-pointer px-4 py-3 space-y-2"
         >
-            {/* Header */}
-            <div className="flex justify-between items-start">
-                <div>
-                    <h2 className="text-lg font-semibold text-gray-800">{name}</h2>
-                    <p className="text-purple-400 text-xs">{description}</p>
-                </div>
-                {status && (
-                    <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full font-medium flex items-center gap-1">
-                        <BadgeCheck className="h-4 w-4" /> {status}
-                    </span>
-                )}
+            {/* Title & Description */}
+            <div>
+                <h2 className="text-base font-semibold text-gray-800 truncate">{name}</h2>
+                <p
+                    className="text-xs text-gray-500 mb-2"
+                    title={description}
+                >
+                    {description.length > 35
+                        ? description.slice(0, 35) + "..."
+                        : description}
+                </p>
             </div>
 
-            {/* Metadata */}
-            <div className="grid grid-cols-1 text-xs text-gray-500 gap-y-1">
-                {owner && (
-                    <p className="flex items-center gap-1">
-                        <User2 className="h-4 w-4 text-blue-500" />
-                        <span className="font-medium">Owner:</span> {owner.name}
-                    </p>
-                )}
-                {createdAt && (
-                    <p className="flex items-center gap-1">
-                        <CalendarClock className="h-4 w-4 text-gray-500" />
-                        <span className="font-medium">Created:</span>{" "}
-                        {new Date(createdAt).toLocaleString()}
-                    </p>
-                )}
-                {updatedAt && (
-                    <p className="flex items-center gap-1">
-                        <RefreshCcw className="h-4 w-4 text-orange-500" />
-                        <span className="font-medium">Updated:</span>{" "}
-                        {new Date(updatedAt).toLocaleString()}
-                    </p>
-                )}
-                {members && members.length > 0 && (
+            {/* Status */}
+            {status && (
+                <span
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${statusColors[status] || statusColors.default}`}
+                >
+                    <BadgeCheck className="h-3 w-3" />
+                    {status}
+                </span>
+            )}
+
+            {/* Meta */}
+            <div className="text-[11px] text-gray-600 space-y-1">
+                <div className="flex items-center gap-1">
+                    <User2 className="h-3 w-3 text-blue-500" />
+                    <span className="font-medium">Owner:</span> {owner?.name}
+                </div>
+
+                <div className="flex items-center gap-1">
+                    <CalendarClock className="h-3 w-3 text-gray-500" />
+                    <span className="font-medium">Created:</span>{" "}
+                    {new Date(createdAt).toLocaleDateString()}
+                </div>
+
+                <div className="flex items-center gap-1">
+                    <RefreshCcw className="h-3 w-3 text-orange-500" />
+                    <span className="font-medium">Updated:</span>{" "}
+                    {new Date(updatedAt).toLocaleDateString()}
+                </div>
+
+                <div className="flex items-center gap-1">
+                    <ListChecks className="h-3 w-3 text-green-600" />
+                    <span className="font-medium">Tasks:</span> {tasks?.length || 0}
+                </div>
+
+                {members.length > 0 && (
                     <div className="flex items-start gap-1">
-                        <Users2 className="h-4 w-4 text-purple-500 mt-0.5" />
+                        <Users2 className="h-3 w-3 text-purple-500 mt-0.5" />
                         <div>
                             <span className="font-medium">Members:</span>{" "}
                             {members
-                                .map((m) => `${m.user.name} (${m.role})`)
                                 .slice(0, 2)
+                                .map((m) => `${m.user.name} (${m.role})`)
                                 .join(", ")}
-                            {members.length > 2 && ` +${members.length - 2} more`}
+                            {members.length > 2 && (
+                                <span className="text-gray-500"> +{members.length - 2} more</span>
+                            )}
                         </div>
                     </div>
                 )}

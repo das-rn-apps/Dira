@@ -1,7 +1,7 @@
-import type { Task } from "../../pages/ProjectTasks";
+import type { ITask } from "../../types";
 
 interface Props {
-    tasks: Task[];
+    tasks: ITask[];
 }
 
 export default function ProgressBar({ tasks }: Props) {
@@ -9,9 +9,11 @@ export default function ProgressBar({ tasks }: Props) {
 
     const completedTasks = tasks.filter(t => t.status === "done").length;
     const inProgressTasks = tasks.filter(t => t.status === "in-progress").length;
+    const testingTasks = tasks.filter(t => t.status === "testing").length;
 
-    // Each completed = 1, in-progress = 0.5, pending = 0
-    const weightedProgress = (completedTasks + inProgressTasks * 0.5);
+    const weightedProgress =
+        completedTasks * 1 + inProgressTasks * 0.5 + testingTasks * 0.75;
+
     const progress = totalTasks === 0 ? 0 : Math.round((weightedProgress / totalTasks) * 100);
 
     const getStatusLabel = () => {
@@ -41,7 +43,7 @@ export default function ProgressBar({ tasks }: Props) {
             </div>
 
             <div className="text-[11px] text-gray-500 text-right mt-1">
-                ✅ {completedTasks} • 🔄 {inProgressTasks} • ⏳ {totalTasks - completedTasks - inProgressTasks} • <b>{progress}%</b> done
+                ✅ {completedTasks} • 🔄 {inProgressTasks} • 🧪 {testingTasks} • ⏳ {totalTasks - completedTasks - inProgressTasks - testingTasks} • <b>{progress}%</b> done
             </div>
         </div>
     );

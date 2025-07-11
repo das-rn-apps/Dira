@@ -1,16 +1,18 @@
 import mongoose, { Schema, Document, ObjectId } from "mongoose";
 import { IUser } from "./User";
+import { ITask } from "./Task";
 
 interface Member {
-  user: IUser;
+  user: ObjectId | IUser;
   role: "admin" | "member" | "tester";
 }
 
 export interface IProject extends Document {
   name: string;
   description: string;
-  owner: ObjectId;
+  owner: ObjectId | IUser;
   members: Member[];
+  tasks: ObjectId[] | ITask[];
 }
 
 const projectSchema = new Schema<IProject>(
@@ -28,6 +30,7 @@ const projectSchema = new Schema<IProject>(
         },
       },
     ],
+    tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
   },
   { timestamps: true }
 );

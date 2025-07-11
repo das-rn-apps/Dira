@@ -12,10 +12,10 @@ import { requireRole } from "../middlewares/roleMiddleware";
 const router = express.Router();
 router.post("/", protect, createProject);
 router.get("/", protect, getMyProjects);
-router.get("/:projectId", protect, getProjectById);
-router.get("/:projectId/members", protect, getProjectMembers);
+router.get("/:project_id", protect, getProjectById);
+router.get("/:project_id/members", protect, getProjectMembers);
 router.post(
-  "/:projectId/invite",
+  "/:project_id/invite",
   protect,
   requireRole(["admin"]),
   inviteMember

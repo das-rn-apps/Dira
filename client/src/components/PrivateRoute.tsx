@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useEffect } from "react";
-import { useAuth } from "../store/auth";
+import { useAuth } from "../store/authStore";
 
 const PrivateLayout = () => {
     const setUser = useAuth((s) => s.setUser);

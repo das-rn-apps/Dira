@@ -26,3 +26,8 @@ export const login = async (req: Request, res: Response) => {
 
   res.json({ token: generateToken(user._id), user });
 };
+
+export const getUsers = async (req: Request, res: Response) => {
+  const users = await User.find({}).sort({ createdAt: -1 });
+  res.json(users);
+};

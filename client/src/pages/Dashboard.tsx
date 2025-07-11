@@ -4,33 +4,39 @@ import api from "../services/api";
 import UserInfo from "../components/Dashboard/UserInfo";
 import ProjectGrid from "../components/Dashboard/ProjectGrid";
 import AddProjectModal from "../components/Dashboard/AddProjectModal";
+import { useUsers } from "../store/userStore";
+import { useProjects } from "../store/projectStore";
 
-interface Project {
-    _id: string;
-    name: string;
-    description: string;
-}
 
 export default function Dashboard() {
-    const [projects, setProjects] = useState<Project[]>([]);
     const [showModal, setShowModal] = useState(false);
+    const { setUsers, users } = useUsers();
+    const { setProjects, projects } = useProjects();
 
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const res = await api.get("/projects");
+                const res = await api.get("/api/projects");
                 setProjects(res.data);
             } catch (err) {
                 console.error("Error loading projects:", err);
             }
         };
-
-        fetchProjects();
+        const fetchUsers = async () => {
+            try {
+                const res = await api.get("/api/auth/users");
+                setUsers(res.data);
+            } catch (err) {
+                console.error("Error loading projects:", err);
+            }
+        };
+        if (users.length === 0) {
+            fetchUsers()
+        }
+        if (projects.length === 0) {
+            fetchProjects()
+        }
     }, []);
-
-    const handleAddProject = (newProject: Project) => {
-        setProjects((prev) => [...prev, newProject]);
-    };
 
     return (
         <div className="p-6">
@@ -52,8 +58,10 @@ export default function Dashboard() {
             {showModal && (
                 <AddProjectModal
                     onClose={() => setShowModal(false)}
-                    onAdd={handleAddProject}
+                    onAdd={(project) => setProjects([...projects, project])}
+                    users={users}
                 />
+
             )}
         </div>
     );

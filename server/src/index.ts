@@ -28,23 +28,23 @@ app.set("io", io);
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
-  socket.on("join_project", (projectId: string) => {
-    socket.join(projectId);
-    console.log(`Joined project room: ${projectId}`);
+  socket.on("join_project", (project_id: string) => {
+    socket.join(project_id);
+    console.log(`Joined project room: ${project_id}`);
   });
 
   socket.on("create_task", (task) => {
-    io.to(task.projectId).emit("task_created", task);
-    io.to(task.projectId).emit("notify", `New task: ${task.title}`);
+    io.to(task.project_id).emit("task_created", task);
+    io.to(task.project_id).emit("notify", `New task: ${task.title}`);
   });
 
   socket.on("update_task", (task) => {
-    io.to(task.projectId).emit("task_updated", task);
-    io.to(task.projectId).emit("notify", `Task updated: ${task.title}`);
+    io.to(task.project_id).emit("task_updated", task);
+    io.to(task.project_id).emit("notify", `Task updated: ${task.title}`);
   });
 
   socket.on("comment_added", (task) => {
-    io.to(task.projectId).emit("notify", `New comment on task: ${task.title}`);
+    io.to(task.project_id).emit("notify", `New comment on task: ${task.title}`);
   });
 
   socket.on("disconnect", () => {

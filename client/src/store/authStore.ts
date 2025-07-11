@@ -1,12 +1,8 @@
 import { create } from "zustand";
+import type { IUser } from "../types";
 
-export interface User {
-  _id: string;
-  name: string;
-  email: string;
-}
 interface Auth {
-  user: User;
+  user: IUser;
   token: string;
 }
 interface AuthState {

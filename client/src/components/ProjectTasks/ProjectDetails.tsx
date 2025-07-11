@@ -33,15 +33,17 @@ interface Project {
     members?: Member[];
     owner?: Owner;
 }
-
-export default function ProjectDetail({ projectId }: { projectId: string | undefined }) {
+interface Props {
+    project_id?: Object;
+}
+export default function ProjectDetail({ project_id }: Props) {
     const [project, setProject] = useState<Project | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const res = await api.get(`/projects/${projectId}`);
+                const res = await api.get(`/api/projects/${project_id}`);
                 setProject(res.data);
             } catch (err) {
                 console.error("Failed to fetch project details:", err);
@@ -50,8 +52,8 @@ export default function ProjectDetail({ projectId }: { projectId: string | undef
             }
         };
 
-        if (projectId) fetchProject();
-    }, [projectId]);
+        if (project_id) fetchProject();
+    }, [project_id]);
 
     if (loading || !project) return null;
 

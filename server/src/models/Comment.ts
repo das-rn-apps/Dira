@@ -1,8 +1,9 @@
 import mongoose, { Document, ObjectId, Schema } from "mongoose";
+import { IUser } from "./User";
 
 export interface IComment extends Document {
-  task: ObjectId;
-  author: ObjectId;
+  task: ObjectId | IUser;
+  author: ObjectId | IUser;
   text: string;
 }
 

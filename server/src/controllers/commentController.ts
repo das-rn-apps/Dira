@@ -18,21 +18,21 @@ export const addComment = async (req: Request, res: Response) => {
   const comment = await Comment.create({
     text,
     task: taskId,
-    author: req.user._id,
+    author: req.user?._id,
   });
 
   const full = await comment.populate("author", "name");
 
   const task = await Task.findById(taskId);
-  if (task?.assignee && task.assignee.toString() !== req.user._id.toString()) {
+  if (task?.assignee && task.assignee.toString() !== req.user?._id.toString()) {
     await Notification.create({
       user: task.assignee,
       message: `New comment on task: ${task.title}`,
-      link: `/projects/${task.project}`,
+      link: `/projects/${task.project_id}`,
     });
   }
 
-  io.to(task?.project.toString()!).emit("comment-added", {
+  io.to(task?.project_id.toString()!).emit("comment-added", {
     taskId,
     comment: full,
   });
